@@ -85,3 +85,25 @@ fstream openFile (string name) {
 
 
 /**************** ORDENAÇÃO EXTERNA ****************/
+
+
+void externalSort (string name) {
+  fstream foriginal, fin[3], fout[3];
+
+  // Ler os caracteres por byte (char por char)
+  // Limite: 10 bytes na memória INTERNA
+
+  // Passar de char pra int -> mergeSort
+  // mergeSort -> int para char
+  // Escreve no arquivo de ENTRADA
+  // Repete até chegar no fim do arquivo principal
+
+  // Aqui começa a verdadeira ordenação externa
+  // Fazer função auxiliar recursiva (ou num laço até estar tudo ordenado?)
+  // Merge entre arquivos de entrada -> arquivos de saída
+  // Repete invertendo os arquivos de entrada com os de saída
+
+  // Se for verificar se tá tudo ordenado, verificar o arquivo inteiro de saída pra ver se
+  // está ordenado
+
+}
