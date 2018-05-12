@@ -14,8 +14,12 @@ void mergeSort(int vet[], int init, int fim);
 
 /** MANIPULAÇÃO DE ARQUIVOS **/
 
-fstream openFile (string name);
+void arquivoParaVetores (fstream f, string strChar, vector<int> vetInt)
 
 
 
 /** ORDENAÇÃO EXTERNA **/
+
+void paraInteiro (vector<int> vet, string c);
+
+void externalSort (string name);

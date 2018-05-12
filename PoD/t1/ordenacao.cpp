@@ -71,39 +71,80 @@ void mergeSort(int vet[], int init, int fim) {
 
 /**************** MANIPULAÇÃO DE ARQUIVOS ****************/
 
-
-fstream openFile (string name) {
-  fstream f;
-  f.open(name);
-  if (!f.is_open()) {
-    cout << "\n\n-- ERRO AO ABRIR ARQUIVO --\n\n";
-    exit(1);
-  }
-  return f;
+void arquivoParaVetores (fstream f, string strChar, vector<int> vetInt) {
+  
 }
-
-
 
 /**************** ORDENAÇÃO EXTERNA ****************/
 
+// Apaga o vetor pra recolocar os novos caracteres
+// Pra botar nos arquivos
+void paraInteiro (vector<int> vet, string c) {
+  vet.erase(vet.begin(), vet.end());
+  int inteiro;
+  for (int i = 0; i < c.length(); i++) {
+    inteiro = (int) c[i];
+    vet.push_back(inteiro);
+  }
+}
 
+
+// O Sort externo
 void externalSort (string name) {
   fstream foriginal, fin[3], fout[3];
 
   // Ler os caracteres por byte (char por char)
   // Limite: 10 bytes na memória INTERNA
 
-  // Passar de char pra int -> mergeSort
-  // mergeSort -> int para char
-  // Escreve no arquivo de ENTRADA
-  // Repete até chegar no fim do arquivo principal
+  // Abre os arquivos
+  foriginal.open(name);
+  for (int i = 0; i < 3; i++) {
+    string str = "in" + ('0'+i) + ".txt"; // Nome do arquivo de entrada
+    fin[i].open(str);
+    str = "out" + ('0'+i) + ".txt"; // Nome do arquivo de saída
+    fout[i].open(str);
+  }
 
-  // Aqui começa a verdadeira ordenação externa
-  // Fazer função auxiliar recursiva (ou num laço até estar tudo ordenado?)
-  // Merge entre arquivos de entrada -> arquivos de saída
-  // Repete invertendo os arquivos de entrada com os de saída
 
-  // Se for verificar se tá tudo ordenado, verificar o arquivo inteiro de saída pra ver se
-  // está ordenado
+  string strChar;
+  vector<int> vetInt;
+  int controleDeArquivo = 0;
+
+  // Encapsular junto com a leitura do arquivo {
+  int quantDeChar = 0;
+  char c;
+  // }
+
+  while (!foriginal.eof()) { // Escreve no vetor e muda o indice
+    if(controleDeArquivo >= 3) // Se chegou em 3 (máximo de arquivos) volta pra 0
+      controleDeArquivo = 0;
+
+    // Encapsular isso {
+    while (!foriginal.eof() && quantDeChar < 10) { // Lê char a char
+      do { // Lê enquanto não for um caractere válido
+        foriginal.getchar(&strChar[quantDeChar]);
+        c = strChar[quantDeChar];
+      } while ((!foriginal.eof()) && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')));
+      quantDeChar++;
+    }
+    strChar[quantDeChar] = '\0';
+    quantDeChar = 0;
+    // }
+
+    // Botar no arquivo certo (usar controleDeArquivo)
+    // Começar botando no FINAL do arquivo atual
+    fin[controleDeArquivo].seekg(0,fin[controleDeArquivo].end());
+    fin[controleDeArquivo].write(strChar, strChar.length());
+    controleDeArquivo++;
+  }
+
+
+  // Ordenação aqui
+
+  // Na hora de ordenar:
+  // char -> int
+  // ordena com int
+  // int -> char
+  // char -> arquivo de saída
 
 }
