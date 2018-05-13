@@ -1,7 +1,6 @@
 #include "ordenacao.hpp"
 
 
-
 /**************** ORDENAÇÃO INTERNA ****************/
 
 // Segundo vet aux (de meio+1 até fim)
@@ -71,9 +70,26 @@ void mergeSort(int vet[], int init, int fim) {
 
 /**************** MANIPULAÇÃO DE ARQUIVOS ****************/
 
-void arquivoParaVetores (fstream f, string strChar, vector<int> vetInt) {
-  
-}
+/** ISSO NÃO TÁ DANDO CERTO **/
+
+// Lê de um arquivo e bota pra uma string
+// Transforma a string pra vetor de inteiros (baseado na tabela ascii)
+// void arquivoParaVetores (fstream f, string strChar, vector<int> vetInt) {
+//   int quantDeChar = 0;
+//   char c;
+//
+//   while (!f.eof() && quantDeChar < 10) { // Lê char by char
+//     do { // Continua lendo com o mesmo índice enquanto não for um caractere válido
+//       f.get(strChar[quantDeChar]);
+//       c = strChar[quantDeChar];
+//     } while ((!f.eof()) && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')));
+//     quantDeChar++; // Vai para o prox caractere
+//   }
+//   strChar[quantDeChar] = '\0';
+//
+//   // Se o programa precisar, já passa para inteiro tambem
+//   paraInteiro(vetInt, strChar);
+// }
 
 /**************** ORDENAÇÃO EXTERNA ****************/
 
@@ -99,18 +115,24 @@ void externalSort (string name) {
   // Abre os arquivos
   foriginal.open(name);
   for (int i = 0; i < 3; i++) {
-    string str = "in" + ('0'+i) + ".txt"; // Nome do arquivo de entrada
+
+    string str;
+    str = "in" + ('0'+i); // Nome do arquivo de entrada
+    str+=".txt";
     fin[i].open(str);
-    str = "out" + ('0'+i) + ".txt"; // Nome do arquivo de saída
+
+    str = "out" + ('0'+i); // Nome do arquivo de saída
+    str+=".txt";
     fout[i].open(str);
   }
 
-
+  // String de char (usada para coletar os char do arquivo)
   string strChar;
+  // Vet de inteiros baseado na tabela ascii (usado para fazer a ordenação)
   vector<int> vetInt;
   int controleDeArquivo = 0;
 
-  // Encapsular junto com a leitura do arquivo {
+  // Encapsular isso {
   int quantDeChar = 0;
   char c;
   // }
@@ -119,10 +141,10 @@ void externalSort (string name) {
     if(controleDeArquivo >= 3) // Se chegou em 3 (máximo de arquivos) volta pra 0
       controleDeArquivo = 0;
 
-    // Encapsular isso {
+    // Encapsular junto na mesma função
     while (!foriginal.eof() && quantDeChar < 10) { // Lê char a char
       do { // Lê enquanto não for um caractere válido
-        foriginal.getchar(&strChar[quantDeChar]);
+        foriginal.get(strChar[quantDeChar]);
         c = strChar[quantDeChar];
       } while ((!foriginal.eof()) && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')));
       quantDeChar++;
@@ -132,9 +154,13 @@ void externalSort (string name) {
     // }
 
     // Botar no arquivo certo (usar controleDeArquivo)
+    fin[controleDeArquivo].seekg(0,fin[controleDeArquivo].end);
+
     // Começar botando no FINAL do arquivo atual
-    fin[controleDeArquivo].seekg(0,fin[controleDeArquivo].end());
-    fin[controleDeArquivo].write(strChar, strChar.length());
+    fin[controleDeArquivo] << strChar;
+    // fin[controleDeArquivo].write(strChar, strChar.length());
+
+    // Vai para o próximo arquivo
     controleDeArquivo++;
   }
 
