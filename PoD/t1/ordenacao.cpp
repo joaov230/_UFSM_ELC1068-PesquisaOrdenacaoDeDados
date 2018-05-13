@@ -169,8 +169,21 @@ void externalSort (string name) {
 
   // Na hora de ordenar:
   // char -> int
+  for (int i = 0; i < strChar.length(); i++){
+		int x = INT strChar[i];
+		vetInt.push_back(x);
+	}
+  
   // ordena com int
+  mergeSort(vetInt, 0, vetInt.length() - 1);
+  
   // int -> char
+  string saida;
+	for (int i = 0; i < vetInt.length(); i++){
+		char c = CHAR vetInt[i] ;
+		saida.push_back(c);
+	}
+  
   // char -> arquivo de saída
 
 }
