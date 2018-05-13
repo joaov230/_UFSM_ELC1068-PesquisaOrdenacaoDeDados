@@ -169,7 +169,7 @@ void externalSort (string name) {
 
   // Na hora de ordenar:
   // char -> int
-  for (int i = 0; i < strChar.length(); i++){
+	for (int i = 0; i < strChar.length(); i++){
 		int x = INT strChar[i];
 		vetInt.push_back(x);
 	}
