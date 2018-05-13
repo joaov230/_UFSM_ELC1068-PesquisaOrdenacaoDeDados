@@ -120,17 +120,13 @@ void externalSort (string name) {
 
   // Abre os arquivos
   foriginal.open(name);
-  for (int i = 0; i < 3; i++) {
+  fin[0].open("in0.txt");
+  fin[1].open("in1.txt");
+  fin[2].open("in2.txt");
+  fout[0].open("in0.txt");
+  fout[1].open("in1.txt");
+  fout[2].open("in2.txt");
 
-    string str;
-    str = "in" + ('0'+i); // Nome do arquivo de entrada
-    str+=".txt";
-    fin[i].open(str);
-
-    str = "out" + ('0'+i); // Nome do arquivo de saída
-    str+=".txt";
-    fout[i].open(str);
-  }
 
   // String de char (usada para coletar os char do arquivo)
   string strChar;
@@ -145,19 +141,20 @@ void externalSort (string name) {
     if(controleDeArquivo >= 3) // Se chegou em 3 (máximo de arquivos) volta pra 0
       controleDeArquivo = 0;
 
-    while (!foriginal.eof() && quantDeChar < 10) { // Lê char a char
-      do { // Lê enquanto não for um caractere válido
-        foriginal.get(strChar[quantDeChar]);
-        c = strChar[quantDeChar];
-      } while ((!foriginal.eof()) && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')));
-      quantDeChar++;
+    while ((foriginal.get(c)) && quantDeChar++ < 10) { // Lê char a char
+      if ((c > 'A' && c < 'Z') || (c > 'a' && c < 'z')) {
+        strChar += c;
+      }
     }
-    strChar[quantDeChar] = '\0';
-    quantDeChar--;
+
+    std::cout << "\n - ANTES DE ORDENAR: " << strChar << endl;
+
     paraInteiro(vetInt, strChar); // Transforma pra inteiro pra ordenar
-    mergeSort(vetInt, 0, quantDeChar); // Ordena
+    mergeSort(vetInt, 0, vetInt.size()); // Ordena
     paraChar(vetInt, strChar); // Bota o ordenado pra char pra escrever no arquivo de entrada
     quantDeChar = 0;
+
+    std::cout << "\n - DEPOIS DE ORDENAR: " << strChar << endl;
 
     // Botar no arquivo certo (usar controleDeArquivo)
     // Busca o final do arquivo
@@ -171,13 +168,13 @@ void externalSort (string name) {
     controleDeArquivo++;
   }
 
-
+  foriginal.close();
+  for (int i = 0; i < 3; i++) {
+    fin[i].close();
+    fout[i].close();
+  }
   // Ordenação aqui
 
-  // Na hora de ordenar:
-  // char -> int
-  // ordena com int
-  // int -> char
-  // char -> arquivo de saída
+
 
 }
