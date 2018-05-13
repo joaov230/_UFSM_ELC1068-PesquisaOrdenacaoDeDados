@@ -7,17 +7,17 @@
 // Segundo vet aux (de meio+1 até fim)
 // Da merge dos dois sub vet no vet novamente
 
-void merge (int vet[], int init, int meio, int fim) {
+void merge (vector<int> vet, int init, int meio, int fim) {
   int pt1 = 1 + meio - init;
   int pt2 = fim - meio;
 
-  int aux1[pt1], aux2[pt2];
+  vector<int> aux1, aux2;
 
   for (int i = 0; i < pt1; i++) {
-    aux1[i] = vet[init + i];
+    aux1.push_back(vet[init + i]);
   }
   for (int j = 0; j < pt2; j++) {
-    aux2[j] = vet[j + meio + 1];
+    aux2.push_back(vet[j + meio + 1]);
   }
 
   // Da merge ja ordenando os vetores
@@ -55,7 +55,7 @@ void merge (int vet[], int init, int meio, int fim) {
 // init = primeira metade do vet
 // fim = segunda metade do vet
 // Ordena as duas metades
-void mergeSort(int vet[], int init, int fim) {
+void mergeSort(vector<int> vet, int init, int fim) {
   if (init < fim) {
     // Começa do init e vai pra metade do mesmo
     int meio = init+(fim-init)/2;
@@ -104,6 +104,12 @@ void paraInteiro (vector<int> vet, string c) {
   }
 }
 
+void paraChar (vector<int> vet, string c) {
+  for (int i = 0; i < vet.size(); i++) {
+    c[i] = (char) vet[i];
+  }
+}
+
 
 // O Sort externo
 void externalSort (string name) {
@@ -132,16 +138,13 @@ void externalSort (string name) {
   vector<int> vetInt;
   int controleDeArquivo = 0;
 
-  // Encapsular isso {
   int quantDeChar = 0;
   char c;
-  // }
 
   while (!foriginal.eof()) { // Escreve no vetor e muda o indice
     if(controleDeArquivo >= 3) // Se chegou em 3 (máximo de arquivos) volta pra 0
       controleDeArquivo = 0;
 
-    // Encapsular junto na mesma função
     while (!foriginal.eof() && quantDeChar < 10) { // Lê char a char
       do { // Lê enquanto não for um caractere válido
         foriginal.get(strChar[quantDeChar]);
@@ -150,15 +153,19 @@ void externalSort (string name) {
       quantDeChar++;
     }
     strChar[quantDeChar] = '\0';
+    quantDeChar--;
+    paraInteiro(vetInt, strChar); // Transforma pra inteiro pra ordenar
+    mergeSort(vetInt, 0, quantDeChar); // Ordena
+    paraChar(vetInt, strChar); // Bota o ordenado pra char pra escrever no arquivo de entrada
     quantDeChar = 0;
-    // }
 
     // Botar no arquivo certo (usar controleDeArquivo)
+    // Busca o final do arquivo
     fin[controleDeArquivo].seekg(0,fin[controleDeArquivo].end);
 
     // Começar botando no FINAL do arquivo atual
+    // Escreve no arquivo
     fin[controleDeArquivo] << strChar;
-    // fin[controleDeArquivo].write(strChar, strChar.length());
 
     // Vai para o próximo arquivo
     controleDeArquivo++;
@@ -169,21 +176,8 @@ void externalSort (string name) {
 
   // Na hora de ordenar:
   // char -> int
-  for (int i = 0; i < strChar.length(); i++){
-    int x = INT strChar[i];
-    vetInt.push_back(x);
-  }
-  
   // ordena com int
-	mergeSort(vetInt, 0, vetInt.length() - 1);
-  
   // int -> char
-  string saida;
-	for (int i = 0; i < vetInt.length(); i++){  
-		char c = CHAR vetInt[i] ;
-    saida.push_back(c);
-	}
-  
   // char -> arquivo de saída
 
 }
