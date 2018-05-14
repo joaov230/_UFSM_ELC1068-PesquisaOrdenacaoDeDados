@@ -21,6 +21,4 @@ void mergeSort(int vet[], int init, int fim);
 
 /** ORDENAÇÃO EXTERNA **/
 
-void paraInteiro (vector<int> vet, string c);
-
 void externalSort (string name);
