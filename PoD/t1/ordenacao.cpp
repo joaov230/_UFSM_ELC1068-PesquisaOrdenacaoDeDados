@@ -1,11 +1,24 @@
 #include "ordenacao.hpp"
 
+
+// Problemas:
+// - Limpar arquivos quando for usa-los como SAÍDA (resolvido logo abaixo, só falta implementar)
+// - COMO ENVIAR VETOR DE ARQUIVO COMO PARÂMETRO?
+
+
+// Quando for usar fin de entrada, fechar fout e abrir assim:
+// fs.open("test.txt", std::fstream::out | std::fstream::trunc);
+// Quando for usar fout de entrada, fechar fin e abrir da mesma maneira
+
+
 void paraInteiro (vector<int>& vet, string c);
 void paraChar (vector<int> vet, string& c);
-int verifica_menor(char a, char b, char c);
+int verifica_menor(fstream f[3], char a, char b, char c);
+bool charValido(char c);
 
 void resultado(fstream& arq, fstream& ffinal);
 bool isEmpty(fstream& f);
+void clearFile(fstream& f);
 
 
 /**************** ORDENAÇÃO INTERNA ****************/
@@ -74,6 +87,44 @@ void mergeSort(vector<int>& vet, int init, int fim) {
   }
 }
 
+/**************** MANIPULAÇÃO DE ARQUIVOS ****************/
+
+
+// Limpa um arquivo (talvez precise do nome do arquivo)
+// Para limpar, pode colocar caracteres que não estejam entre 'a' e 'z'
+// Mudar todo o tipo de verificação pra ver se está vazio usando charValido (char c)
+void clearFile(fstream& f) {
+
+}
+
+
+bool isEmpty(fstream& f) {
+  // Vai para a posição inicial
+  f.seekg(0, f.beg);
+
+  char c;
+  while (f.get(c)) {
+    if (charValido(c))
+      return false;
+  }
+
+  // Volta pra posição inicial
+  f.seekg(0, f.beg);
+  return true;
+}
+
+
+void resultado(fstream& arq, fstream& ffinal) {
+  char c;
+  int cont = 0;
+  for (cont = 0; arq.get(c); cont++) {
+    if(charValido(c))
+      ffinal << c;
+    if (cont == 30)
+      ffinal << '\n';
+  }
+}
+
 
 /**************** ORDENAÇÃO EXTERNA ****************/
 
@@ -101,50 +152,55 @@ bool charValido(char c) {
   return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 
-
-int verifica_menor(char a, char b, char c) {
-  if (a <= b && a <= c && charValido(a)){
-    return 0;
+//
+//
+//
+//
+//
+//
+// REVISAR ESSA FUNCAO
+int verifica_menor(fstream f[3], char a, char b, char c) {
+  if (a <= b && a <= c){
+    if (charValido(a)) {
+      return 0;
+    }
+    f[0].ignore();
   }
-  if (b <= a && b <= c && charValido(b)){
-    return 1;
+  if (b <= a && b <= c && charValido(b)) {
+    if (charValido(b)) {
+      return 1;
+    }
+    f[1].ignore();
   }
-  if (c <= a && c <= b && charValido(c)){
-    return 2;
+  if (c <= a && c <= b && charValido(c)) {
+    if (charValido(c)) {
+      return 2;
+    }
+    f[2].ignore();
   }
+  // Se C for o menor, mas não for válido:
   if (a <= b) {
+    if (charValido(a)) {
+      return 0;
+    }
+    f[0].ignore();
+  }
+  if (b <= a){ // Se A for o menor e não for válido
+    if (charValido(b)) {
+      return 1;
+    }
+    f[1].ignore();
+  } else { // Vai o B mesmo
     return 0;
-  } else {
-    return 1;
   }
 }
-
-
-bool isEmpty(fstream& f) {
-
-  // Vai pra ultima posição e verifica o tamanho
-  f.seekg(0, f.end);
-  int tamanho = f.tellg();
-
-  // Volta pra posição atual
-  f.seekg(0, f.beg);
-
-  if (tamanho == 0)
-    return true;
-  else
-    return false;
-}
-
-
-void resultado(fstream& arq, fstream& ffinal) {
-  char c;
-  int cont = 0;
-  for (cont = 0; arq.get(c); cont++) {
-    ffinal << c;
-    if (cont == 30)
-      ffinal << '\n';
-  }
-}
+// REVISAR ESSA FUNCAO
+//
+//
+//
+//
+//
+//
 
 
 // O Sort externo
@@ -179,7 +235,7 @@ void externalSort (string name) {
 
     while (quantDeChar < 10) { // Lê char a char
       foriginal.get(c);
-      if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+      if (charValido(c)) {
         strChar += c;
       }
       quantDeChar++;
@@ -210,10 +266,19 @@ void externalSort (string name) {
   ffinal.open("final.txt");
   int cont=0, max=30;
 
+  for (int i = 0; i < 3; i++) {
+    fin[i].seekg(0, fin[i].beg);
+    fout[i].seekg(0, fout[i].beg);
+  }
+
   while (!(isEmpty(fin[1]) && isEmpty(fin[2]))) {
+
+    // Limpa o fout (dica de como fazer isso no inicio desse arquivo)
+
     while(!(fin[0].eof() && fin[1].eof() && fin[2].eof())) {
       char c;
-      int k = verifica_menor(fin[0].peek(), fin[1].peek(), fin[2].peek());
+      // Como envia um vetor de arquivos?
+      int k = verifica_menor(fin, fin[0].peek(), fin[1].peek(), fin[2].peek());
       fin[k].get(c);
       if (cont  < max){
         fout[0].seekg(0, fout[0].end);
@@ -239,9 +304,13 @@ void externalSort (string name) {
 
     cont = 0;
     max *= 3;
+
+    // Limpa o fin (dica de como fazer isso no inicio desse arquivo)
+
     while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
       char c;
-      int k = verifica_menor(fout[0].peek(), fout[1].peek(), fout[2].peek());
+      // Como envia um vetor de arquivos?
+      int k = verifica_menor(fout, fout[0].peek(), fout[1].peek(), fout[2].peek());
       fout[k].get(&c,1);
       if (cont  < max){
         fin[0].seekg(0, fin[0].end);
