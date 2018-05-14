@@ -1,6 +1,8 @@
 Para testar, criar os seguintes arquivos:
 
 teste.txt (arquivo inicial e principal)
+final.txt
+
 
 in0.txt
 in1.txt
