@@ -138,11 +138,12 @@ void externalSort (string name) {
   char c;
 
   while (!foriginal.eof()) { // Escreve no vetor e muda o indice
+    strChar.clear();
     if(controleDeArquivo >= 3) // Se chegou em 3 (máximo de arquivos) volta pra 0
       controleDeArquivo = 0;
 
     while ((foriginal.get(c)) && quantDeChar++ < 10) { // Lê char a char
-      if ((c > 'A' && c < 'Z') || (c > 'a' && c < 'z')) {
+      if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
         strChar += c;
       }
     }
@@ -168,11 +169,6 @@ void externalSort (string name) {
     controleDeArquivo++;
   }
 
-  foriginal.close();
-  for (int i = 0; i < 3; i++) {
-    fin[i].close();
-    fout[i].close();
-  }
   // Ordenação aqui
 
 
