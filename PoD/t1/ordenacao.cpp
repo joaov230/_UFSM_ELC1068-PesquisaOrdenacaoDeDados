@@ -173,7 +173,7 @@ void externalSort (string name) {
       quantDeChar++;
     }
 
-  
+
     paraInteiro(vetInt, strChar); // Transforma pra inteiro pra ordenar
     mergeSort(vetInt, 0, vetInt.size()-1); // Ordena
     paraChar(vetInt, strChar); // Bota o ordenado pra char pra escrever no arquivo de entrada
@@ -194,71 +194,71 @@ void externalSort (string name) {
 
 
   // Ordenação aqui
-  // fstream ffinal;
-  // ffinal.open("final.txt");
-  // int cont=0, max=30;
-  //
-  // while (!(isEmpty(fin[1]) && isEmpty(fin[2]))) {
-  //   while(!(fin[0].eof() && fin[1].eof() && fin[2].eof())) {
-  //     char c;
-  //     int k = verifica_menor(fin[0].peek(), fin[1].peek(), fin[2].peek());
-  //     fin[k].get(&c,1);
-  //     if (cont  < max){
-  //       fout[0].seekg(0, fout[0].end);
-  //       fout[0] << c;
-  //     }else if (cont < max*2){
-  //       fout[1].seekg(0, fout[1].end);
-  //       fout[1] << c;
-  //     }else{
-  //       fout[2].seekg(0, fout[2].end);
-  //       fout[2] << c;
-  //     }
-  //     cont++;
-  //   }
-  //   for (int i = 0; i < 3; i++){
-  //     fin[i].flush();
-  //     fout[i].flush();
-  //   }
-  //
-  //   if (isEmpty(fout[1]) && isEmpty(fout[2])){
-  //     resultado(fout[0], ffinal);
-  //     return;
-  //   }
-  //
-  //   cont = 0;
-  //   max *= 3;
-  //   while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
-  //     char c;
-  //     int k = verifica_menor(fout[0].peek(), fout[1].peek(), fout[2].peek());
-  //     fout[k].get(&c,1);
-  //     if (cont  < max){
-  //       fin[0].seekg(0, fin[0].end);
-  //       fin[0] << c;
-  //     }else if (cont < max*2){
-  //       fin[1].seekg(0, fin[1].end);
-  //       fin[1] << c;
-  //     }else{
-  //       fin[2].seekg(0, fin[2].end);
-  //       fin[2] << c;
-  //     }
-  //     cont++;
-  //   }
-  //   for (int i = 0; i < 3; i++){
-  //     fin[i].flush();
-  //     fout[i].flush();
-  //   }
-  //   cont =  0;
-  //   max *= 3;
-  // }
-  //
-  // resultado(fin[0], ffinal);
-  //
-  // // Fechando os arquivos
-  // for (int i = 0; i < 3; i++) {
-  //   fin[i].close();
-  //   fout[i].close();
-  // }
-  // ffinal.close();
+  fstream ffinal;
+  ffinal.open("final.txt");
+  int cont=0, max=30;
+
+  while (!(isEmpty(fin[1]) && isEmpty(fin[2]))) {
+    while(!(fin[0].eof() && fin[1].eof() && fin[2].eof())) {
+      char c;
+      int k = verifica_menor(fin[0].peek(), fin[1].peek(), fin[2].peek());
+      fin[k].get(&c,1);
+      if (cont  < max){
+        fout[0].seekg(0, fout[0].end);
+        fout[0] << c;
+      }else if (cont < max*2){
+        fout[1].seekg(0, fout[1].end);
+        fout[1] << c;
+      }else{
+        fout[2].seekg(0, fout[2].end);
+        fout[2] << c;
+      }
+      cont++;
+    }
+    for (int i = 0; i < 3; i++){
+      fin[i].flush();
+      fout[i].flush();
+    }
+
+    if (isEmpty(fout[1]) && isEmpty(fout[2])){
+      resultado(fout[0], ffinal);
+      return;
+    }
+
+    cont = 0;
+    max *= 3;
+    while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
+      char c;
+      int k = verifica_menor(fout[0].peek(), fout[1].peek(), fout[2].peek());
+      fout[k].get(&c,1);
+      if (cont  < max){
+        fin[0].seekg(0, fin[0].end);
+        fin[0] << c;
+      }else if (cont < max*2){
+        fin[1].seekg(0, fin[1].end);
+        fin[1] << c;
+      }else{
+        fin[2].seekg(0, fin[2].end);
+        fin[2] << c;
+      }
+      cont++;
+    }
+    for (int i = 0; i < 3; i++){
+      fin[i].flush();
+      fout[i].flush();
+    }
+    cont =  0;
+    max *= 3;
+  }
+
+  resultado(fin[0], ffinal);
+
+  // Fechando os arquivos
+  for (int i = 0; i < 3; i++) {
+    fin[i].close();
+    fout[i].close();
+  }
+  ffinal.close();
 
   return;
 }
