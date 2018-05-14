@@ -111,7 +111,7 @@ void paraChar (vector<int> vet, string c) {
 }
 
 
-int verifica_menor(int a, int b, int c){
+char verifica_menor(char a, char b, char c){
   if (a >= b && a >= c){
     return 0;
   }else if (b >= a && b >= c){
