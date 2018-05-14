@@ -1,4 +1,5 @@
 # Pesquisa e Ordenação de Dados
 Repositório dedicado para Pesquisa e Ordenação de Dados
 
-[Módulo de ordenação e ideias comentadas (por enquanto)](PoD/t1/ordenacao.cpp) 
+[Módulo de ordenação (.cpp)](PoD/t1/ordenacao.cpp) 
+[Módulo de ordenação (.hpp)](PoD/t1/ordenacao.hpp) 
