@@ -111,6 +111,25 @@ void paraChar (vector<int> vet, string c) {
 }
 
 
+int verifica_menor(int a, int b, int c){
+  if (a >= b && a >= c){
+    return 0;
+  }else if (b >= a && b >= c){
+    return 1;
+  }else{
+    return 2;
+  } 
+}
+
+bool is_empty(std::ifstream& pFile){
+    return pFile.peek() == std::ifstream::traits_type::eof();
+}
+
+void resultado(std::fstream arq){
+
+}
+
+
 // O Sort externo
 void externalSort (string name) {
   fstream foriginal, fin[3], fout[3];
@@ -170,6 +189,60 @@ void externalSort (string name) {
   }
 
   // Ordenação aqui
+
+  fstream ffinal;
+  ffinal.open("final.txt");
+  int cont=0,max=30;
+
+  while(is_empty(fin[1]) && is_empty(fin[2]) ){ 
+    while( !(fin[0].eof() && fin[1].eof() && fin[2].eof()) ){
+      char c;
+      int k = verifica_menor(fin[0].peek(), fin[1].peek(), fin[2].peek());
+      fin[k].get(c,1);
+      if (cont  < max){
+        fout[0] << c;
+      }else if (cont < max*2){
+        fout[1] << c;
+      }else{
+        fout[2] << c; 
+      }
+      cont++;
+    }
+    for (int i = 0; i < 3; i++){
+      fin[i].flush();
+      fout[i].flush();
+    }
+    
+    if ( is_empty(fout[1]) && is_empty(fout[2]) ){
+      resultado(fout[0]);
+      return;
+    }
+
+    cont = 0;
+    max *= 3;
+    while( !(fout[0].eof() && fout[1].eof() && fout[2].eof()) ){
+      char c;
+      int k = verifica_menor(fout[0].peek(), fout[1].peek(), fout[2].peek());
+      fout[k].get(c,1);
+      if (cont  < max){
+        fin[0] << c;
+      }else if (cont < max*2){
+        fin[1] << c;
+      }else{
+        fin[2] << c;  
+      }
+      cont++;
+    }
+    for (int i = 0; i < 3; i++){
+      fin[i].flush();
+      fout[i].flush();
+    }
+    cont =  0;
+    max *= 3;
+  }
+
+  resultado(fin[0]);
+  return;
 
 
 
