@@ -125,7 +125,7 @@ bool is_empty(std::ifstream& pFile){
     return pFile.peek() == std::ifstream::traits_type::eof();
 }
 
-void resultado(std::fstream arq){
+void resultado(std::fstream arq, std::fstream final){
 
 }
 
@@ -214,7 +214,7 @@ void externalSort (string name) {
     }
     
     if ( is_empty(fout[1]) && is_empty(fout[2]) ){
-      resultado(fout[0]);
+      resultado(fout[0], ffinal);
       return;
     }
 
@@ -241,7 +241,7 @@ void externalSort (string name) {
     max *= 3;
   }
 
-  resultado(fin[0]);
+  resultado(fin[0], ffinal);
   return;
 
 
