@@ -2,7 +2,7 @@
 
 void paraInteiro (vector<int>& vet, string c);
 void paraChar (vector<int> vet, string& c);
-char verifica_menor(char a, char b, char c);
+int verifica_menor(char a, char b, char c);
 
 void resultado(fstream& arq, fstream& ffinal);
 bool isEmpty(fstream& f);
@@ -97,13 +97,25 @@ void paraChar (vector<int> vet, string& c) {
 }
 
 
-char verifica_menor(char a, char b, char c) {
-  if (a >= b && a >= c){
+bool charValido(char c) {
+  return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+
+
+int verifica_menor(char a, char b, char c) {
+  if (a <= b && a <= c && charValido(a)){
     return 0;
-  }else if (b >= a && b >= c){
+  }
+  if (b <= a && b <= c && charValido(b)){
     return 1;
-  }else{
+  }
+  if (c <= a && c <= b && charValido(c)){
     return 2;
+  }
+  if (a <= b) {
+    return 0;
+  } else {
+    return 1;
   }
 }
 
@@ -202,7 +214,7 @@ void externalSort (string name) {
     while(!(fin[0].eof() && fin[1].eof() && fin[2].eof())) {
       char c;
       int k = verifica_menor(fin[0].peek(), fin[1].peek(), fin[2].peek());
-      fin[k].get(&c,1);
+      fin[k].get(c);
       if (cont  < max){
         fout[0].seekg(0, fout[0].end);
         fout[0] << c;
