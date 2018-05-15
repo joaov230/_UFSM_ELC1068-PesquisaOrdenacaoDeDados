@@ -3,7 +3,6 @@
 
 // Problemas:
 // - Limpar arquivos quando for usa-los como SAÍDA (resolvido logo abaixo, só falta implementar)
-// - COMO ENVIAR VETOR DE ARQUIVO COMO PARÂMETRO?
 
 
 // Quando for usar fin de entrada, fechar fout e abrir assim:
@@ -13,12 +12,12 @@
 
 void paraInteiro (vector<int>& vet, string c);
 void paraChar (vector<int> vet, string& c);
-int verifica_menor(fstream f[3], char a, char b, char c);
+int verifica_menor(ifstream& f1, ifstream& f2, ifstream& f3);
 bool charValido(char c);
 
-void resultado(fstream& arq, fstream& ffinal);
-bool isEmpty(fstream& f);
-void clearFile(fstream& f);
+void resultado(ifstream& arq);
+bool isEmpty(void);
+void copiaProArquivo(void);
 
 
 /**************** ORDENAÇÃO INTERNA ****************/
@@ -90,40 +89,72 @@ void mergeSort(vector<int>& vet, int init, int fim) {
 /**************** MANIPULAÇÃO DE ARQUIVOS ****************/
 
 
-// Limpa um arquivo (talvez precise do nome do arquivo)
-// Para limpar, pode colocar caracteres que não estejam entre 'a' e 'z'
-// Mudar todo o tipo de verificação pra ver se está vazio usando charValido (char c)
-void clearFile(fstream& f) {
+bool isEmpty(void) {
 
-}
+  fstream f1,f2;
+  f1.open("out1.txt");
+  f2.open("out2.txt");
 
+  f1.seekg(0, f1.end);
+  int tam1 = f1.tellg();
+  f1.close();
 
-bool isEmpty(fstream& f) {
-  // Vai para a posição inicial
-  f.seekg(0, f.beg);
+  f2.seekg(0, f2.end);
+  int tam2 = f2.tellg();
+  f2.close();
 
-  char c;
-  while (f.get(c)) {
-    if (charValido(c))
-      return false;
-  }
-
-  // Volta pra posição inicial
-  f.seekg(0, f.beg);
-  return true;
-}
-
-
-void resultado(fstream& arq, fstream& ffinal) {
-  char c;
-  int cont = 0;
-  for (cont = 0; arq.get(c); cont++) {
-    if(charValido(c))
-      ffinal << c;
-    if (cont == 30)
-      ffinal << '\n';
+  if (tam1 == 0 && tam2 == 0) {
+    return true;
+  } else {
+    return false;
   }
 }
+
+
+void resultado(ifstream& arq) {
+  char c;
+
+  ofstream ffinal;
+  ffinal.open("final.txt");
+
+  while(arq.get(c)) {
+    ffinal << c;
+  }
+}
+
+
+void copiaProArquivo(void) {
+  ifstream fout[3];
+  ofstream fin[3];
+  char c;
+
+  fout[0].open("out0.txt");
+  fout[1].open("out1.txt");
+  fout[2].open("out2.txt");
+  fin[0].open("in0.txt");
+  fin[1].open("in1.txt");
+  fin[2].open("in2.txt");
+
+  // Primeiro arquivo
+  while (fout[0].get(c)) {
+    fin[0] << c;
+  }
+  // Primeiro arquivo
+  while (fout[1].get(c)) {
+    fin[1] << c;
+  }
+  // Primeiro arquivo
+  while (fout[2].get(c)) {
+    fin[2] << c;
+  }
+
+  // Fecha os arquivos
+  for (int i = 0; i < 3; i++) {
+    fin[i].close();
+    fout[i].close();
+  }
+}
+
 
 
 /**************** ORDENAÇÃO EXTERNA ****************/
@@ -133,7 +164,7 @@ void resultado(fstream& arq, fstream& ffinal) {
 void paraInteiro (vector<int>& vet, string c) {
   vet.erase(vet.begin(), vet.end());
   int inteiro;
-  for (int i = 0; i < c.length(); i++) {
+  for (unsigned int i = 0; i < c.length(); i++) {
     inteiro = (int) c[i];
     vet.push_back(inteiro);
   }
@@ -142,7 +173,7 @@ void paraInteiro (vector<int>& vet, string c) {
 
 void paraChar (vector<int> vet, string& c) {
   c.clear();
-  for (int i = 0; i < vet.size(); i++) {
+  for (unsigned int i = 0; i < vet.size(); i++) {
     c += (char) vet[i];
   }
 }
@@ -152,60 +183,46 @@ bool charValido(char c) {
   return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 
-//
-//
-//
-//
-//
-//
-// REVISAR ESSA FUNCAO
-int verifica_menor(fstream f[3], char a, char b, char c) {
+
+// Verifica qual é o menor char entre os 3 arquivos
+// Verifica se o caractere é válido
+// Caso não for, ignora esse caractere
+int verifica_menor(ifstream& f1, ifstream& f2, ifstream& f3) {
+  char a = f1.peek();
+  if (!charValido(a)) {
+    a = CHAR_MAX; // Definido no <climits>
+    f1.ignore();
+  }
+
+  char b = f2.peek();
+  if (!charValido(b)) {
+    b = CHAR_MAX; // Definido no <climits>
+    f2.ignore();
+  }
+
+  char c = f3.peek();
+  if (!charValido(c)) {
+    c = CHAR_MAX; // Definido no <climits>
+    f3.ignore();
+  }
+
+
   if (a <= b && a <= c){
-    if (charValido(a)) {
-      return 0;
-    }
-    f[0].ignore();
-  }
-  if (b <= a && b <= c && charValido(b)) {
-    if (charValido(b)) {
-      return 1;
-    }
-    f[1].ignore();
-  }
-  if (c <= a && c <= b && charValido(c)) {
-    if (charValido(c)) {
-      return 2;
-    }
-    f[2].ignore();
-  }
-  // Se C for o menor, mas não for válido:
-  if (a <= b) {
-    if (charValido(a)) {
-      return 0;
-    }
-    f[0].ignore();
-  }
-  if (b <= a){ // Se A for o menor e não for válido
-    if (charValido(b)) {
-      return 1;
-    }
-    f[1].ignore();
-  } else { // Vai o B mesmo
     return 0;
   }
+  if (b <= a && b <= c) {
+    return 1;
+  }
+  if (c <= a && c <= b) {
+    return 2;
+  }
+  return 0;
 }
-// REVISAR ESSA FUNCAO
-//
-//
-//
-//
-//
-//
 
 
 // O Sort externo
 void externalSort (string name) {
-  fstream foriginal, fin[3], fout[3];
+  fstream foriginal, fin[3];
 
   // Ler os caracteres por byte (char por char)
   // Limite: 10 bytes na memória INTERNA
@@ -215,9 +232,6 @@ void externalSort (string name) {
   fin[0].open("in0.txt");
   fin[1].open("in1.txt");
   fin[2].open("in2.txt");
-  fout[0].open("in0.txt");
-  fout[1].open("in1.txt");
-  fout[2].open("in2.txt");
 
   // String de char (usada para coletar os char do arquivo)
   // Vet de inteiros baseado na tabela ascii (usado para fazer a ordenação)
@@ -262,84 +276,115 @@ void externalSort (string name) {
 
 
   // Ordenação aqui
-  fstream ffinal;
-  ffinal.open("final.txt");
   int cont=0, max=30;
 
   for (int i = 0; i < 3; i++) {
-    fin[i].seekg(0, fin[i].beg);
-    fout[i].seekg(0, fout[i].beg);
+    fin[i].close();
   }
 
-  while (!(isEmpty(fin[1]) && isEmpty(fin[2]))) {
+  ifstream fentrada[3];
+  ofstream fout[3];
+  fentrada[0].open("in0.txt");
+  fentrada[1].open("in1.txt");
+  fentrada[2].open("in2.txt");
+  // fout[0].open("out0.txt");
+  // fout[1].open("out1.txt");
+  // fout[2].open("out2.txt");
 
-    // Limpa o fout (dica de como fazer isso no inicio desse arquivo)
+  // Ordenação
+  while (!(isEmpty())) {
 
-    while(!(fin[0].eof() && fin[1].eof() && fin[2].eof())) {
+    remove("out0.txt");
+    remove("out1.txt");
+    remove("out2.txt");
+    fout[0].open("out0.txt");
+    fout[1].open("out1.txt");
+    fout[2].open("out2.txt");
+
+    // Quanto fin é a entrada e fout é a saída
+    while(!(fentrada[0].eof() && fentrada[1].eof() && fentrada[2].eof())) {
       char c;
-      // Como envia um vetor de arquivos?
-      int k = verifica_menor(fin, fin[0].peek(), fin[1].peek(), fin[2].peek());
-      fin[k].get(c);
-      if (cont  < max){
-        fout[0].seekg(0, fout[0].end);
+      int k = verifica_menor(fentrada[0], fentrada[1], fentrada[2]);
+
+      fentrada[k].get(c);
+      if (cont < max){
         fout[0] << c;
       }else if (cont < max*2){
-        fout[1].seekg(0, fout[1].end);
         fout[1] << c;
-      }else{
-        fout[2].seekg(0, fout[2].end);
+      }else if (cont < max*3){
         fout[2] << c;
       }
       cont++;
-    }
-    for (int i = 0; i < 3; i++){
-      fin[i].flush();
-      fout[i].flush();
-    }
-
-    if (isEmpty(fout[1]) && isEmpty(fout[2])){
-      resultado(fout[0], ffinal);
-      return;
+      if (cont >= max*3) {
+        cont = 0;
+      }
     }
 
     cont = 0;
-    max *= 3;
+    max *= 10;
 
-    // Limpa o fin (dica de como fazer isso no inicio desse arquivo)
-
-    while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
-      char c;
-      // Como envia um vetor de arquivos?
-      int k = verifica_menor(fout, fout[0].peek(), fout[1].peek(), fout[2].peek());
-      fout[k].get(&c,1);
-      if (cont  < max){
-        fin[0].seekg(0, fin[0].end);
-        fin[0] << c;
-      }else if (cont < max*2){
-        fin[1].seekg(0, fin[1].end);
-        fin[1] << c;
-      }else{
-        fin[2].seekg(0, fin[2].end);
-        fin[2] << c;
-      }
-      cont++;
-    }
     for (int i = 0; i < 3; i++){
-      fin[i].flush();
-      fout[i].flush();
+      fentrada[i].seekg(0, fentrada[i].beg);
     }
-    cont =  0;
-    max *= 3;
+
+    copiaProArquivo();
+
+    for (int i = 0; i < 3; i++){
+      fout[i].close();
+    }
+
+    // remove("out0.txt");
+    // remove("out1.txt");
+    // remove("out2.txt");
+    // fout[0].open("out0.txt");
+    // fout[1].open("out1.txt");
+    // fout[2].open("out2.txt");
+
+    //
+    // // Limpa o fin
+    //
+    // // Quando fout é a entrada e fin é a saída
+    // while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
+    //
+    //   std::cout << "\n--TA NO SEGUNDO WHILE DO FOUT--\n";
+    //
+    //   char c;
+    //   int k = verifica_menor(fout[0], fout[1], fout[2]);
+    //
+    //   cout << "\nK = " << k << endl;
+    //
+    //   fout[k].get(c);
+    //   if (cont  < max){
+    //     cout << "\nfout0\n";
+    //     fin[0].seekg(0, fin[0].end);
+    //     fin[0] << c;
+    //   }else if (cont < max*2){
+    //     cout << "\nfout1\n";
+    //     fin[1].seekg(0, fin[1].end);
+    //     fin[1] << c;
+    //   }else{
+    //     cout << "\nfout2\n";
+    //     fin[2].seekg(0, fin[2].end);
+    //     fin[2] << c;
+    //   }
+    //   cont++;
+    // }
+    //
+    // for (int i = 0; i < 3; i++){
+    //   fin[i].flush();
+    //   fout[i].flush();
+    // }
+    // cont =  0;
+    // max *= 3;
   }
 
-  resultado(fin[0], ffinal);
+  resultado(fentrada[0]);
 
   // Fechando os arquivos
   for (int i = 0; i < 3; i++) {
-    fin[i].close();
+    fentrada[i].close();
     fout[i].close();
   }
-  ffinal.close();
 
   return;
 }
