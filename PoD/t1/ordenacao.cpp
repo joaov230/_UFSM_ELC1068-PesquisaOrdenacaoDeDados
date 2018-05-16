@@ -1,15 +1,6 @@
 #include "ordenacao.hpp"
 
 
-// Problemas:
-// - Limpar arquivos quando for usa-los como SAÍDA (resolvido logo abaixo, só falta implementar)
-
-
-// Quando for usar fin de entrada, fechar fout e abrir assim:
-// fs.open("test.txt", std::fstream::out | std::fstream::trunc);
-// Quando for usar fout de entrada, fechar fin e abrir da mesma maneira
-
-
 void paraInteiro (vector<int>& vet, string c);
 void paraChar (vector<int> vet, string& c);
 int verifica_menor(int vet[], int tamMax, ifstream& f1, ifstream& f2, ifstream& f3);
@@ -144,11 +135,11 @@ void copiaProArquivo(void) {
   while (fout[0].get(c)) {
     fin[0] << c;
   }
-  // Primeiro arquivo
+  // Segundo arquivo
   while (fout[1].get(c)) {
     fin[1] << c;
   }
-  // Primeiro arquivo
+  // Terceiro arquivo
   while (fout[2].get(c)) {
     fin[2] << c;
   }
@@ -195,39 +186,27 @@ bool charValido(char c) {
 int verifica_menor(int vet[], int tamMax, ifstream& f1, ifstream& f2, ifstream& f3) {
   char a = f1.peek();
   if (!charValido(a)) {
-    cout << "\n\nEntrou aqui (INVALIDO) = A";
     a = CHAR_MAX; // Definido no <climits>
   }
   if (vet[0] >= tamMax) {
-    cout << "\nEntrou aqui (VETOR) = A";
     a = CHAR_MAX; // Definido no <climits>
   }
 
   char b = f2.peek();
   if (!charValido(b)) {
-    cout << "\nEntrou aqui (INVALIDO) = B";
     b = CHAR_MAX; // Definido no <climits>
   }
   if (vet[1] >= tamMax) {
-    cout << "\nEntrou aqui (VETOR) = B";
     b = CHAR_MAX; // Definido no <climits>
   }
 
   char c = f3.peek();
   if (!charValido(c)) {
-    cout << "\nEntrou aqui (INVALIDO) = C";
     c = CHAR_MAX; // Definido no <climits>
   }
   if (vet[2] >= tamMax) {
-    cout << "\nEntrou aqui (VETOR) = C";
     c = CHAR_MAX; // Definido no <climits>
   }
-
-
-  cout << "\n\n A = " << a;
-  cout << "\n B = " << b;
-  cout << "\n C = " << c;
-
 
   if (a <= b && a <= c) {
     vet[0] += 1;
@@ -319,8 +298,6 @@ void externalSort (string name) {
     fentrada[1].open("in1.txt");
     fentrada[2].open("in2.txt");
 
-    cout << "\n\n\n RECRIA OUT \n\n\n";
-
     remove("out0.txt");
     remove("out1.txt");
     remove("out2.txt");
@@ -345,13 +322,6 @@ void externalSort (string name) {
       }
       cont++;
       if (vet[0] >= tamMax && vet[1] >= tamMax && vet[2] >= tamMax) {
-        cout << "\n\n LIMPOU O VET DENTRO DO WHILE \n\n";
-
-        cout << "\n\n CONT = " << cont << "\n\n";
-
-        for (int i = 0; i < 3; i++) {
-          cout << "\n vet[" << i << "] = " << vet[i] << "\n";
-        }
         for (int i = 0; i < 3; i++) {
           vet[i] = 0;
         }
