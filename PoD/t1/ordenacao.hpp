@@ -4,7 +4,7 @@
 #include <vector>
 #include <climits>
 #include <cstdio>
-
+#include <cmath>
 
 using namespace std;
 
@@ -17,8 +17,6 @@ void mergeSort(int vet[], int init, int fim);
 
 
 /** MANIPULAÇÃO DE ARQUIVOS **/
-
-
 
 /** ORDENAÇÃO EXTERNA **/
 

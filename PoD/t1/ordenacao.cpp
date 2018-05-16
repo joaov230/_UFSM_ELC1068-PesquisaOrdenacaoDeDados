@@ -12,10 +12,10 @@
 
 void paraInteiro (vector<int>& vet, string c);
 void paraChar (vector<int> vet, string& c);
-int verifica_menor(ifstream& f1, ifstream& f2, ifstream& f3);
+int verifica_menor(int vet[], int tamMax, ifstream& f1, ifstream& f2, ifstream& f3);
 bool charValido(char c);
 
-void resultado(ifstream& arq);
+void resultado(void);
 bool isEmpty(void);
 void copiaProArquivo(void);
 
@@ -111,13 +111,18 @@ bool isEmpty(void) {
 }
 
 
-void resultado(ifstream& arq) {
+void resultado(void) {
   char c;
 
+  ifstream arq;
+  arq.open("in0.txt");
   ofstream ffinal;
   ffinal.open("final.txt");
 
+  cout << "\n\n\n\n\n C O P I O U    P R O     F I N A L \n\n\n\n\n";
+
   while(arq.get(c)) {
+    cout << "\n" << " C = " << c << "\n";
     ffinal << c;
   }
 }
@@ -187,33 +192,53 @@ bool charValido(char c) {
 // Verifica qual é o menor char entre os 3 arquivos
 // Verifica se o caractere é válido
 // Caso não for, ignora esse caractere
-int verifica_menor(ifstream& f1, ifstream& f2, ifstream& f3) {
+int verifica_menor(int vet[], int tamMax, ifstream& f1, ifstream& f2, ifstream& f3) {
   char a = f1.peek();
   if (!charValido(a)) {
+    cout << "\n\nEntrou aqui (INVALIDO) = A";
     a = CHAR_MAX; // Definido no <climits>
-    f1.ignore();
+  }
+  if (vet[0] >= tamMax) {
+    cout << "\nEntrou aqui (VETOR) = A";
+    a = CHAR_MAX; // Definido no <climits>
   }
 
   char b = f2.peek();
   if (!charValido(b)) {
+    cout << "\nEntrou aqui (INVALIDO) = B";
     b = CHAR_MAX; // Definido no <climits>
-    f2.ignore();
+  }
+  if (vet[1] >= tamMax) {
+    cout << "\nEntrou aqui (VETOR) = B";
+    b = CHAR_MAX; // Definido no <climits>
   }
 
   char c = f3.peek();
   if (!charValido(c)) {
+    cout << "\nEntrou aqui (INVALIDO) = C";
     c = CHAR_MAX; // Definido no <climits>
-    f3.ignore();
+  }
+  if (vet[2] >= tamMax) {
+    cout << "\nEntrou aqui (VETOR) = C";
+    c = CHAR_MAX; // Definido no <climits>
   }
 
 
-  if (a <= b && a <= c){
+  cout << "\n\n A = " << a;
+  cout << "\n B = " << b;
+  cout << "\n C = " << c;
+
+
+  if (a <= b && a <= c) {
+    vet[0] += 1;
     return 0;
   }
   if (b <= a && b <= c) {
+    vet[1] += 1;
     return 1;
   }
   if (c <= a && c <= b) {
+    vet[2] += 1;
     return 2;
   }
   return 0;
@@ -284,15 +309,17 @@ void externalSort (string name) {
 
   ifstream fentrada[3];
   ofstream fout[3];
-  fentrada[0].open("in0.txt");
-  fentrada[1].open("in1.txt");
-  fentrada[2].open("in2.txt");
-  // fout[0].open("out0.txt");
-  // fout[1].open("out1.txt");
-  // fout[2].open("out2.txt");
+
+  int vet[3] = {0,0,0};
+  int tamMax = 10;
 
   // Ordenação
-  while (!(isEmpty())) {
+  do {
+    fentrada[0].open("in0.txt");
+    fentrada[1].open("in1.txt");
+    fentrada[2].open("in2.txt");
+
+    cout << "\n\n\n RECRIA OUT \n\n\n";
 
     remove("out0.txt");
     remove("out1.txt");
@@ -303,82 +330,56 @@ void externalSort (string name) {
 
     // Quanto fin é a entrada e fout é a saída
     while(!(fentrada[0].eof() && fentrada[1].eof() && fentrada[2].eof())) {
-      char c;
-      int k = verifica_menor(fentrada[0], fentrada[1], fentrada[2]);
-
+      int k = verifica_menor(vet, tamMax, fentrada[0], fentrada[1], fentrada[2]);
       fentrada[k].get(c);
+
       if (cont < max){
         fout[0] << c;
-      }else if (cont < max*2){
+      } else if (cont < max*2){
         fout[1] << c;
-      }else if (cont < max*3){
+      } else if (cont < max*3){
         fout[2] << c;
-      }
-      cont++;
-      if (cont >= max*3) {
+      } else {
+        fout[0] << c;
         cont = 0;
       }
+      cont++;
+      if (vet[0] >= tamMax && vet[1] >= tamMax && vet[2] >= tamMax) {
+        cout << "\n\n LIMPOU O VET DENTRO DO WHILE \n\n";
+
+        cout << "\n\n CONT = " << cont << "\n\n";
+
+        for (int i = 0; i < 3; i++) {
+          cout << "\n vet[" << i << "] = " << vet[i] << "\n";
+        }
+        for (int i = 0; i < 3; i++) {
+          vet[i] = 0;
+        }
+      }
+    }
+
+    for (int i = 0; i < 3; i++) {
+      vet[i] = 0;
     }
 
     cont = 0;
+    tamMax = max;
     max *= 10;
 
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 3; i++) {
       fentrada[i].seekg(0, fentrada[i].beg);
+      fentrada[i].close();
     }
-
-    copiaProArquivo();
 
     for (int i = 0; i < 3; i++){
       fout[i].close();
     }
 
-    // remove("out0.txt");
-    // remove("out1.txt");
-    // remove("out2.txt");
-    // fout[0].open("out0.txt");
-    // fout[1].open("out1.txt");
-    // fout[2].open("out2.txt");
+    copiaProArquivo();
 
-    //
-    // // Limpa o fin
-    //
-    // // Quando fout é a entrada e fin é a saída
-    // while(!(fout[0].eof() && fout[1].eof() && fout[2].eof())){
-    //
-    //   std::cout << "\n--TA NO SEGUNDO WHILE DO FOUT--\n";
-    //
-    //   char c;
-    //   int k = verifica_menor(fout[0], fout[1], fout[2]);
-    //
-    //   cout << "\nK = " << k << endl;
-    //
-    //   fout[k].get(c);
-    //   if (cont  < max){
-    //     cout << "\nfout0\n";
-    //     fin[0].seekg(0, fin[0].end);
-    //     fin[0] << c;
-    //   }else if (cont < max*2){
-    //     cout << "\nfout1\n";
-    //     fin[1].seekg(0, fin[1].end);
-    //     fin[1] << c;
-    //   }else{
-    //     cout << "\nfout2\n";
-    //     fin[2].seekg(0, fin[2].end);
-    //     fin[2] << c;
-    //   }
-    //   cont++;
-    // }
-    //
-    // for (int i = 0; i < 3; i++){
-    //   fin[i].flush();
-    //   fout[i].flush();
-    // }
-    // cont =  0;
-    // max *= 3;
-  }
+  } while (!(isEmpty()));
 
-  resultado(fentrada[0]);
+  resultado();
 
   // Fechando os arquivos
   for (int i = 0; i < 3; i++) {
