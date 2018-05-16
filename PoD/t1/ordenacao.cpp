@@ -110,8 +110,6 @@ void resultado(void) {
   ofstream ffinal;
   ffinal.open("final.txt");
 
-  cout << "\n\n\n\n\n C O P I O U    P R O     F I N A L \n\n\n\n\n";
-
   while(arq.get(c)) {
     cout << "\n" << " C = " << c << "\n";
     ffinal << c;
